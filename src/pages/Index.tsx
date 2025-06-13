@@ -32,6 +32,10 @@ const Index = () => {
     navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
+  const handleLoadMore = () => {
+    setShowAllUpcoming(true);
+  };
+
   const heroMovie = trendingData?.results?.[0];
 
   // Limit movies for initial display
@@ -64,27 +68,13 @@ const Index = () => {
           <LoadingSpinner />
         ) : (
           displayedUpcoming && (
-            <>
-              <MovieGrid
-                movies={displayedUpcoming}
-                title="New Release"
-              />
-              
-              {/* Load More Button */}
-              {!showAllUpcoming && upcomingData?.results && upcomingData.results.length > 10 && (
-                <div className="container mx-auto px-4 pb-8">
-                  <div className="text-center">
-                    <Button
-                      onClick={() => setShowAllUpcoming(true)}
-                      variant="outline"
-                      className="border-white/30 text-white hover:bg-white/10 px-8 py-2"
-                    >
-                      Load More
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </>
+            <MovieGrid
+              movies={displayedUpcoming}
+              title="New Release"
+              showLoadMore={true}
+              onLoadMore={handleLoadMore}
+              hasMore={!showAllUpcoming && upcomingData?.results && upcomingData.results.length > 10}
+            />
           )
         )}
 

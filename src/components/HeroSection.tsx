@@ -18,7 +18,7 @@ const HeroSection = ({ movie }: HeroSectionProps) => {
   const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : "";
 
   return (
-    <div className="relative h-[70vh] md:h-[80vh] overflow-hidden">
+    <div className="relative h-[50vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -28,38 +28,38 @@ const HeroSection = ({ movie }: HeroSectionProps) => {
       />
       
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
       {/* Content */}
       <div className="relative h-full flex items-center">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+          <div className="max-w-xl lg:max-w-2xl">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
               {movie.title}
             </h1>
             
             {releaseYear && (
               <div className="flex items-center text-gray-300 mb-4">
-                <span className="text-sm">📅 {releaseYear}</span>
+                <span className="text-sm md:text-base">📅 {releaseYear}</span>
               </div>
             )}
 
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8 line-clamp-3">
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 md:mb-8 line-clamp-3">
               {movie.overview}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <Button 
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 text-white px-8 py-3"
+                className="bg-red-600 hover:bg-red-700 text-white px-6 md:px-8 py-2 md:py-3 text-sm md:text-base"
               >
                 ▶ Watch Trailer
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
-                className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
+                className="border-white/30 text-white hover:bg-white/10 px-6 md:px-8 py-2 md:py-3 text-sm md:text-base"
               >
                 See Detail
               </Button>

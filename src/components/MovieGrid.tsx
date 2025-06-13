@@ -18,9 +18,20 @@ interface MovieGridProps {
   title: string;
   showRanking?: boolean;
   onFavoriteChange?: () => void;
+  showLoadMore?: boolean;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
 }
 
-const MovieGrid = ({ movies, title, showRanking = false, onFavoriteChange }: MovieGridProps) => {
+const MovieGrid = ({ 
+  movies, 
+  title, 
+  showRanking = false, 
+  onFavoriteChange,
+  showLoadMore = false,
+  onLoadMore,
+  hasMore = false
+}: MovieGridProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   if (!movies || movies.length === 0) {
@@ -68,25 +79,54 @@ const MovieGrid = ({ movies, title, showRanking = false, onFavoriteChange }: Mov
           </div>
         </div>
 
-        {/* Horizontal Scrolling Container */}
-        <div className="relative">
-          <div
-            id={`scroll-container-${title.replace(/\s+/g, '')}`}
-            className="flex overflow-x-auto scrollbar-hide space-x-4 pb-4"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
+        {/* Movie Grid */}
+        {showLoadMore ? (
+          // Grid layout for New Release section
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
             {movies.map((movie, index) => (
-              <div key={movie.id} className="flex-none w-48 md:w-56">
-                <MovieCard
-                  movie={movie}
-                  showRank={showRanking}
-                  rank={showRanking ? index + 1 : undefined}
-                  onFavoriteChange={onFavoriteChange}
-                />
-              </div>
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                showRank={showRanking}
+                rank={showRanking ? index + 1 : undefined}
+                onFavoriteChange={onFavoriteChange}
+              />
             ))}
           </div>
-        </div>
+        ) : (
+          // Horizontal Scrolling Container for other sections
+          <div className="relative">
+            <div
+              id={`scroll-container-${title.replace(/\s+/g, '')}`}
+              className="flex overflow-x-auto scrollbar-hide space-x-4 pb-4"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {movies.map((movie, index) => (
+                <div key={movie.id} className="flex-none w-48 md:w-56">
+                  <MovieCard
+                    movie={movie}
+                    showRank={showRanking}
+                    rank={showRanking ? index + 1 : undefined}
+                    onFavoriteChange={onFavoriteChange}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Load More Button */}
+        {showLoadMore && hasMore && (
+          <div className="text-center">
+            <Button
+              onClick={onLoadMore}
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 px-8 py-2"
+            >
+              Load More
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
