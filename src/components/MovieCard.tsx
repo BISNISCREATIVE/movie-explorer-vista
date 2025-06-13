@@ -61,7 +61,8 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
     <Link to={`/movie/${movie.id}`} className="group block">
       <div className="relative rounded-lg overflow-hidden bg-gray-900 transition-transform duration-300 group-hover:scale-105">
         {showRank && rank && (
-          <div className="absolute top-2 left-2 z-10 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded">
+          <div className="absolute top-2 left-2 z-10 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
+            <span className="text-yellow-400 mr-1">⭐</span>
             {rank}
           </div>
         )}
@@ -79,6 +80,7 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
           <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
         </Button>
 
+        {/* Movie Poster */}
         <div className="aspect-[2/3] overflow-hidden">
           <img
             src={tmdbApi.getImageUrl(movie.poster_path)}
@@ -87,13 +89,17 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
           />
         </div>
 
-        <div className="p-4">
+        {/* Movie Info */}
+        <div className="p-3">
           <h3 className="font-semibold text-white text-sm line-clamp-2 mb-2">
             {movie.title}
           </h3>
-          <div className="flex items-center justify-between text-xs text-gray-400">
-            <span>⭐ {rating}/10</span>
-            {releaseYear && <span>{releaseYear}</span>}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center text-yellow-400">
+              <span className="mr-1">⭐</span>
+              <span className="text-white">{rating}/10</span>
+            </div>
+            {releaseYear && <span className="text-gray-400">{releaseYear}</span>}
           </div>
         </div>
       </div>

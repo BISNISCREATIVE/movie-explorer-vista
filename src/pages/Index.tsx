@@ -1,6 +1,8 @@
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import MovieGrid from "@/components/MovieGrid";
@@ -9,6 +11,7 @@ import { tmdbApi } from "@/lib/tmdb";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [showAllUpcoming, setShowAllUpcoming] = useState(false);
 
   const { data: trendingData, isLoading: trendingLoading } = useQuery({
     queryKey: ["trending"],
@@ -31,6 +34,11 @@ const Index = () => {
 
   const heroMovie = trendingData?.results?.[0];
 
+  // Limit movies for initial display
+  const displayedUpcoming = showAllUpcoming 
+    ? upcomingData?.results 
+    : upcomingData?.results?.slice(0, 10);
+
   return (
     <div className="min-h-screen bg-black">
       <Navigation onSearch={handleSearch} />
@@ -38,35 +46,55 @@ const Index = () => {
       <div className="pt-20">
         {heroMovie && <HeroSection movie={heroMovie} />}
 
+        {/* Trending Now Section */}
         {trendingLoading ? (
           <LoadingSpinner />
         ) : (
           trendingData?.results && (
             <MovieGrid
-              movies={trendingData.results.slice(0, 12)}
+              movies={trendingData.results.slice(0, 20)}
               title="Trending Now"
               showRanking={true}
             />
           )
         )}
 
+        {/* New Release Section */}
         {upcomingLoading ? (
           <LoadingSpinner />
         ) : (
-          upcomingData?.results && (
-            <MovieGrid
-              movies={upcomingData.results.slice(0, 12)}
-              title="New Release"
-            />
+          displayedUpcoming && (
+            <>
+              <MovieGrid
+                movies={displayedUpcoming}
+                title="New Release"
+              />
+              
+              {/* Load More Button */}
+              {!showAllUpcoming && upcomingData?.results && upcomingData.results.length > 10 && (
+                <div className="container mx-auto px-4 pb-8">
+                  <div className="text-center">
+                    <Button
+                      onClick={() => setShowAllUpcoming(true)}
+                      variant="outline"
+                      className="border-white/30 text-white hover:bg-white/10 px-8 py-2"
+                    >
+                      Load More
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )
         )}
 
+        {/* Popular Movies Section */}
         {popularLoading ? (
           <LoadingSpinner />
         ) : (
           popularData?.results && (
             <MovieGrid
-              movies={popularData.results.slice(0, 12)}
+              movies={popularData.results.slice(0, 20)}
               title="Popular Movies"
             />
           )
