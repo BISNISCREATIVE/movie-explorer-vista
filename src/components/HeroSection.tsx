@@ -18,7 +18,7 @@ const HeroSection = ({ movie }: HeroSectionProps) => {
   const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : "";
 
   return (
-    <div className="relative h-[50vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+    <div className="relative h-[45vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -34,32 +34,32 @@ const HeroSection = ({ movie }: HeroSectionProps) => {
       {/* Content */}
       <div className="relative h-full flex items-center">
         <div className="container mx-auto px-4">
-          <div className="max-w-xl lg:max-w-2xl">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+          <div className="max-w-lg lg:max-w-xl">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 leading-tight">
               {movie.title}
             </h1>
             
             {releaseYear && (
-              <div className="flex items-center text-gray-300 mb-4">
+              <div className="flex items-center text-gray-300 mb-3">
                 <span className="text-sm md:text-base">📅 {releaseYear}</span>
               </div>
             )}
 
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6 md:mb-8 line-clamp-3">
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-4 md:mb-6 line-clamp-3">
               {movie.overview}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
               <Button 
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 text-white px-6 md:px-8 py-2 md:py-3 text-sm md:text-base"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2 text-sm md:text-base"
               >
                 ▶ Watch Trailer
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
-                className="border-white/30 text-white hover:bg-white/10 px-6 md:px-8 py-2 md:py-3 text-sm md:text-base"
+                className="border-white/30 text-white hover:bg-white/10 px-4 md:px-6 py-2 text-sm md:text-base"
               >
                 See Detail
               </Button>

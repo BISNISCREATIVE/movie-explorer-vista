@@ -41,62 +41,64 @@ const Index = () => {
   // Limit movies for initial display
   const displayedUpcoming = showAllUpcoming 
     ? upcomingData?.results 
-    : upcomingData?.results?.slice(0, 10);
+    : upcomingData?.results?.slice(0, 12);
 
   return (
     <div className="min-h-screen bg-black">
       <Navigation onSearch={handleSearch} />
       
-      <div className="pt-20">
+      <div className="pt-16">
         {heroMovie && <HeroSection movie={heroMovie} />}
 
-        {/* Trending Now Section */}
-        {trendingLoading ? (
-          <LoadingSpinner />
-        ) : (
-          trendingData?.results && (
-            <MovieGrid
-              movies={trendingData.results.slice(0, 20)}
-              title="Trending Now"
-              showRanking={true}
-            />
-          )
-        )}
+        <div className="py-6 space-y-6">
+          {/* Trending Now Section */}
+          {trendingLoading ? (
+            <LoadingSpinner />
+          ) : (
+            trendingData?.results && (
+              <MovieGrid
+                movies={trendingData.results.slice(0, 20)}
+                title="Trending Now"
+                showRanking={true}
+              />
+            )
+          )}
 
-        {/* New Release Section */}
-        {upcomingLoading ? (
-          <LoadingSpinner />
-        ) : (
-          displayedUpcoming && (
-            <MovieGrid
-              movies={displayedUpcoming}
-              title="New Release"
-              showLoadMore={true}
-              onLoadMore={handleLoadMore}
-              hasMore={!showAllUpcoming && upcomingData?.results && upcomingData.results.length > 10}
-            />
-          )
-        )}
+          {/* New Release Section */}
+          {upcomingLoading ? (
+            <LoadingSpinner />
+          ) : (
+            displayedUpcoming && (
+              <MovieGrid
+                movies={displayedUpcoming}
+                title="New Release"
+                showLoadMore={true}
+                onLoadMore={handleLoadMore}
+                hasMore={!showAllUpcoming && upcomingData?.results && upcomingData.results.length > 12}
+              />
+            )
+          )}
 
-        {/* Popular Movies Section */}
-        {popularLoading ? (
-          <LoadingSpinner />
-        ) : (
-          popularData?.results && (
-            <MovieGrid
-              movies={popularData.results.slice(0, 20)}
-              title="Popular Movies"
-            />
-          )
-        )}
+          {/* Popular Movies Section */}
+          {popularLoading ? (
+            <LoadingSpinner />
+          ) : (
+            popularData?.results && (
+              <MovieGrid
+                movies={popularData.results.slice(0, 20)}
+                title="Popular Movies"
+              />
+            )
+          )}
+        </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-gray-800 py-8 mt-12">
+      <footer className="bg-black border-t border-gray-800 py-6 mt-8">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="text-2xl">🎬</div>
-            <span className="text-xl font-bold text-white">Movie</span>
+          <div className="flex items-center justify-center space-x-2 mb-3">
+            <div className="text-xl">🎬</div>
+            <span className="text-lg font-bold text-white">Movie</span>
           </div>
           <p className="text-gray-400 text-sm">Copyright ©2025 Movie Explorer</p>
         </div>

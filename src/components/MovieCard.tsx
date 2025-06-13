@@ -61,8 +61,8 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
     <Link to={`/movie/${movie.id}`} className="group block">
       <div className="relative rounded-lg overflow-hidden bg-gray-900 transition-transform duration-300 group-hover:scale-105 h-full">
         {showRank && rank && (
-          <div className="absolute top-2 left-2 z-10 bg-black/80 text-white text-xs font-bold px-2 py-1 rounded flex items-center">
-            <span className="text-yellow-400 mr-1">⭐</span>
+          <div className="absolute top-1 left-1 z-10 bg-black/80 text-white text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+            <span className="text-yellow-400 mr-0.5">⭐</span>
             {rank}
           </div>
         )}
@@ -71,13 +71,13 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
           variant="ghost"
           size="sm"
           onClick={handleFavoriteClick}
-          className={`absolute top-2 right-2 z-10 p-2 rounded-full backdrop-blur-sm transition-colors ${
+          className={`absolute top-1 right-1 z-10 p-1.5 rounded-full backdrop-blur-sm transition-colors ${
             isFavorite 
               ? "bg-red-500/80 text-white hover:bg-red-600/80" 
               : "bg-black/50 text-white hover:bg-black/70"
           }`}
         >
-          <Heart className={`h-4 w-4 ${isFavorite ? "fill-current" : ""}`} />
+          <Heart className={`h-3 w-3 ${isFavorite ? "fill-current" : ""}`} />
         </Button>
 
         {/* Movie Poster */}
@@ -91,16 +91,16 @@ const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) 
         </div>
 
         {/* Movie Info */}
-        <div className="p-3">
-          <h3 className="font-semibold text-white text-sm line-clamp-2 mb-2 min-h-[2.5rem]">
+        <div className="p-2">
+          <h3 className="font-medium text-white text-xs line-clamp-2 mb-1 min-h-[2rem]">
             {movie.title}
           </h3>
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center text-yellow-400">
-              <span className="mr-1">⭐</span>
-              <span className="text-white">{rating}/10</span>
+              <span className="mr-0.5">⭐</span>
+              <span className="text-white text-xs">{rating}</span>
             </div>
-            {releaseYear && <span className="text-gray-400">{releaseYear}</span>}
+            {releaseYear && <span className="text-gray-400 text-xs">{releaseYear}</span>}
           </div>
         </div>
       </div>
