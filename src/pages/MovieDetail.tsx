@@ -111,14 +111,6 @@ const MovieDetail = () => {
           {/* Overview */}
           <MovieOverview movie={movie} />
 
-          {/* Watch Trailer Button - Centered below Overview */}
-          {trailers.length > 0 && (
-            <WatchTrailerButton
-              onClick={handleWatchTrailer}
-              isTrailerVisible={showTrailer}
-            />
-          )}
-
           {/* Inline Trailer */}
           {showTrailer && selectedTrailer && (
             <div id="inline-trailer-player">
