@@ -1,99 +1,122 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { tmdbApi } from '@/services/tmdb';
+import { Movie } from '@/types/movie';
+import MovieCard from '@/components/MovieCard';
+import { Loader2 } from 'lucide-react';
+import InlineSpinner from '@/components/ui/InlineSpinner';
 
-import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Navigation from "@/components/Navigation";
-import MovieCard from "@/components/MovieCard";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import EmptyState from "@/components/EmptyState";
-import { tmdbApi } from "@/lib/tmdb";
+const SearchPage = () => {
+    const [searchParams] = useSearchParams();
+    const query = searchParams.get('q') || '';
 
-const Search = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const initialQuery = searchParams.get("q") || "";
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
+    const [results, setResults] = useState<Movie[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
-  const { data: searchResults, isLoading } = useQuery({
-    queryKey: ["search", initialQuery],
-    queryFn: () => tmdbApi.searchMovies(initialQuery),
-    enabled: !!initialQuery,
-  });
+    const fetchSearchResults = useCallback(async (searchQuery: string, searchPage: number) => {
+        if (!searchQuery) {
+            setResults([]);
+            return;
+        };
+        setLoading(true);
+        try {
+            const data = await tmdbApi.searchMovies(searchQuery, searchPage);
+            if (searchPage === 1) {
+                setResults(data.results || []);
+            } else {
+                setResults(prev => [...prev, ...(data.results || [])]);
+            }
+            setHasMore((data.results?.length ?? 0) > 0 && data.page < (data.total_pages || 1));
+        } catch (error) {
+            console.error("Failed to search movies:", error);
+            setHasMore(false);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
+    useEffect(() => {
+        setResults([]);
+        setPage(1);
+        setHasMore(true);
+        if (query) {
+            fetchSearchResults(query, 1);
+        }
+    }, [query, fetchSearchResults]);
 
-  useEffect(() => {
-    setSearchQuery(initialQuery);
-  }, [initialQuery]);
+    const loadMoreResults = useCallback(() => {
+        if (!loading && hasMore) {
+            setPage(prev => prev + 1);
+        }
+    }, [loading, hasMore]);
+    
+    useEffect(() => {
+        if (page > 1) {
+            fetchSearchResults(query, page);
+        }
+    }, [page, query, fetchSearchResults]);
 
-  return (
-    <div className="min-h-screen bg-black">
-      <Navigation />
-      
-      <div className="pt-24 pb-12">
-        <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate("/")}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            
-            <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
-              <Input
-                type="text"
-                placeholder="Search movies..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-900 border-gray-700 text-white placeholder:text-gray-400 text-lg py-6"
-                autoFocus
-              />
-            </form>
-          </div>
+    const handleScroll = useCallback(() => {
+        if (window.innerHeight + document.documentElement.scrollTop < document.documentElement.offsetHeight - 300 || loading || !hasMore) {
+            return;
+        }
+        loadMoreResults();
+    }, [loading, hasMore, loadMoreResults]);
 
-          {/* Results */}
-          {isLoading ? (
-            <LoadingSpinner />
-          ) : initialQuery && searchResults ? (
-            searchResults.results.length > 0 ? (
-              <>
-                <h2 className="text-xl text-gray-400 mb-6">
-                  Search results for "{initialQuery}" ({searchResults.total_results} results)
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-                  {searchResults.results.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <EmptyState
-                title="No Results Found"
-                description={`Sorry, we couldn't find any movies matching "${initialQuery}". Try searching with different keywords.`}
-              />
-            )
-          ) : (
-            <EmptyState
-              title="Search Movies"
-              description="Enter a movie title in the search box above to find your favorite films."
-            />
-          )}
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
+
+    return (
+        <div className="min-h-screen bg-black text-white pt-24 pb-12">
+            <div className="container mx-auto px-4">
+                <h1 className="text-3xl md:text-4xl font-bold mb-8">
+                    {query ? (
+                        <>
+                            Search results for <span className="text-[#9A1E0C]">"{query}"</span>
+                        </>
+                    ) : (
+                        "Please enter a search term"
+                    )}
+                </h1>
+
+                {loading && results.length === 0 ? (
+                    <div className="flex justify-center items-center h-64">
+                        <Loader2 className="w-12 h-12 animate-spin text-gray-400" />
+                    </div>
+                ) : results.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                        {results.map(movie => (
+                            <MovieCard key={movie.id} movie={movie} />
+                        ))}
+                    </div>
+                ) : (
+                    !loading && query && (
+                         <div className="flex flex-col items-center justify-center text-center py-20">
+                            <img src="/lovable-uploads/70623c64-2a7b-48ad-beed-1bbfba185e3a.png" alt="Data Not Found" className="w-32 h-32 mb-6" />
+                            <h2 className="text-2xl font-bold text-white">Data Not Found</h2>
+                            <p className="text-gray-400 mt-2">Try other keywords</p>
+                        </div>
+                    )
+                )}
+                
+                {loading && results.length > 0 && (
+                    <div className="flex justify-center py-8">
+                        <InlineSpinner size={40} />
+                    </div>
+                )}
+
+                {!hasMore && results.length > 0 && (
+                    <div className="text-center text-zinc-500 py-4 text-sm">
+                        You've reached the end of the results.
+                    </div>
+                )}
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default Search;
+export default SearchPage;

@@ -1,71 +1,50 @@
 
-import { Button } from "@/components/ui/button";
-import { tmdbApi } from "@/lib/tmdb";
+import { useState, useEffect } from 'react';
+import { Movie } from '@/types/movie';
+import { tmdbApi } from '@/services/tmdb';
 
-interface Movie {
-  id: number;
-  title: string;
-  overview: string;
-  backdrop_path: string;
-  release_date: string;
-}
+const HeroSection = () => {
+  const [featuredMovie, setFeaturedMovie] = useState<Movie | null>(null);
 
-interface HeroSectionProps {
-  movie: Movie;
-}
+  useEffect(() => {
+    const fetchFeaturedMovie = async () => {
+      try {
+        const response = await tmdbApi.getTrending();
+        if (response.results && response.results.length > 0) {
+          setFeaturedMovie(response.results[0]);
+        }
+      } catch (error) {
+        // ignore error
+      }
+    };
+    fetchFeaturedMovie();
+  }, []);
 
-const HeroSection = ({ movie }: HeroSectionProps) => {
-  const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : "";
+  if (!featuredMovie) {
+    return (
+      <div className="h-64 w-full bg-[#12161C] rounded-b-2xl"></div>
+    );
+  }
 
   return (
-    <div className="relative h-[45vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
-      {/* Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(${tmdbApi.getBackdropUrl(movie.backdrop_path)})`,
-        }}
+    <div className="relative rounded-b-2xl overflow-hidden h-64 mb-0 bg-[#12161C]">
+      <img
+        src={tmdbApi.getImageUrl(featuredMovie.backdrop_path, "w1280")}
+        alt={featuredMovie.title}
+        className="absolute inset-0 w-full h-full object-cover opacity-30"
+        draggable={false}
       />
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-      {/* Content */}
-      <div className="relative h-full flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-lg lg:max-w-xl">
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-3 leading-tight">
-              {movie.title}
-            </h1>
-            
-            {releaseYear && (
-              <div className="flex items-center text-gray-300 mb-3">
-                <span className="text-sm md:text-base">📅 {releaseYear}</span>
-              </div>
-            )}
-
-            <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-4 md:mb-6 line-clamp-3">
-              {movie.overview}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
-              <Button 
-                size="lg"
-                className="bg-red-600 hover:bg-red-700 text-white px-4 md:px-6 py-2 text-sm md:text-base"
-              >
-                ▶ Watch Trailer
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-white/30 text-white hover:bg-white/10 px-4 md:px-6 py-2 text-sm md:text-base"
-              >
-                See Detail
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[#12161C]/70 via-[#12161C]/70 to-[#171B22]/90" />
+      <div className="relative flex flex-col justify-center h-full container mx-auto px-4 z-10">
+        <h2 className="text-xl md:text-2xl text-gray-100 font-bold mb-2 max-w-xl">
+          Now Trending:
+        </h2>
+        <h1 className="text-2xl md:text-4xl font-black text-white mb-3 max-w-xl">
+          {featuredMovie.title}
+        </h1>
+        <p className="text-gray-300 text-base mb-1 max-w-xl line-clamp-2">
+          {featuredMovie.overview}
+        </p>
       </div>
     </div>
   );

@@ -1,110 +1,75 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { tmdbApi } from "@/lib/tmdb";
-import { favoritesManager, type FavoriteMovie } from "@/lib/favorites";
-import { useToast } from "@/hooks/use-toast";
-
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  vote_average: number;
-  release_date: string;
-  overview: string;
-}
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Star, Heart } from 'lucide-react';
+import { Movie } from '@/types/movie';
+import { tmdbApi } from '@/services/tmdb';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface MovieCardProps {
   movie: Movie;
-  showRank?: boolean;
   rank?: number;
-  onFavoriteChange?: () => void;
+  hideFavorite?: boolean;
+  compact?: boolean;
 }
 
-const MovieCard = ({ movie, showRank, rank, onFavoriteChange }: MovieCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(favoritesManager.isFavorite(movie.id));
-  const { toast } = useToast();
+const MovieCard = ({ movie, rank, hideFavorite, compact }: MovieCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const favoriteMovie: FavoriteMovie = {
-      id: movie.id,
-      title: movie.title,
-      poster_path: movie.poster_path,
-      vote_average: movie.vote_average,
-      release_date: movie.release_date,
-      overview: movie.overview,
-    };
-
-    const isNowFavorite = favoritesManager.toggleFavorite(favoriteMovie);
-    setIsFavorite(isNowFavorite);
-
-    toast({
-      title: isNowFavorite ? "Added to Favorites" : "Removed from Favorites",
-      description: `${movie.title} has been ${isNowFavorite ? "added to" : "removed from"} your favorites.`,
-      duration: 2000,
-    });
-
-    if (onFavoriteChange) {
-      onFavoriteChange();
-    }
+    toggleFavorite(movie);
   };
 
-  const releaseYear = movie.release_date ? new Date(movie.release_date).getFullYear() : "";
-  const rating = movie.vote_average ? movie.vote_average.toFixed(1) : "N/A";
-
   return (
-    <Link to={`/movie/${movie.id}`} className="group block">
-      <div className="relative rounded-lg overflow-hidden bg-gray-900 transition-transform duration-300 group-hover:scale-105 h-full">
-        {showRank && rank && (
-          <div className="absolute top-1 left-1 z-10 bg-black/80 text-white text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
-            <span className="text-yellow-400 mr-0.5">⭐</span>
-            {rank}
-          </div>
-        )}
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleFavoriteClick}
-          className={`absolute top-1 right-1 z-10 p-1.5 rounded-full backdrop-blur-sm transition-colors ${
-            isFavorite 
-              ? "bg-red-500/80 text-white hover:bg-red-600/80" 
-              : "bg-black/50 text-white hover:bg-black/70"
-          }`}
-        >
-          <Heart className={`h-3 w-3 ${isFavorite ? "fill-current" : ""}`} />
-        </Button>
-
-        {/* Movie Poster */}
-        <div className="aspect-[2/3] overflow-hidden">
-          <img
-            src={tmdbApi.getImageUrl(movie.poster_path)}
-            alt={movie.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            loading="lazy"
-          />
-        </div>
-
-        {/* Movie Info */}
-        <div className="p-2">
-          <h3 className="font-medium text-white text-xs line-clamp-2 mb-1 min-h-[2rem]">
-            {movie.title}
-          </h3>
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center text-yellow-400">
-              <span className="mr-0.5">⭐</span>
-              <span className="text-white text-xs">{rating}</span>
+    <div className="relative group">
+      <Link to={`/movie/${movie.id}`} className="group block hover:scale-[1.04] transition cursor-pointer">
+        <div className={`flex flex-col items-start gap-3 p-0 bg-black rounded-xl overflow-hidden shadow-lg border border-[#232831] ${compact ? '' : 'h-full'}`}>
+          {/* Rank badge (carousel only) */}
+          {typeof rank !== 'undefined' && (
+            <div className="absolute top-2 left-2 z-10 bg-[#131417]/80 text-white text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center shadow">
+              {rank}
             </div>
-            {releaseYear && <span className="text-gray-400 text-xs">{releaseYear}</span>}
+          )}
+
+          <div className="aspect-[2/3] relative w-full">
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gray-700 animate-pulse rounded-xl" />
+            )}
+            <img
+              src={tmdbApi.getImageUrl(movie.poster_path)}
+              alt={movie.title}
+              className={`w-full h-full object-cover rounded-xl transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImageLoaded(true)}
+            />
+          </div>
+
+          {/* Card Content */}
+          <div className="p-3 flex flex-col flex-1 items-start gap-3 w-full">
+            <h3 className="text-white font-semibold text-base line-clamp-1">{movie.title}</h3>
+            <div className="flex items-center gap-2">
+              <Star size={16} className="text-yellow-400 fill-yellow-400" />
+              <span className="text-gray-200 text-sm">{movie.vote_average.toFixed(1)}/10</span>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+      {!hideFavorite && (
+        <button
+          onClick={handleFavoriteClick}
+          className="absolute top-4 right-4 z-20 p-2 bg-black/60 rounded-full text-white hover:bg-black/80 transition-all duration-200"
+          aria-label="Toggle Favorite"
+        >
+          <Heart
+            size={18}
+            fill={isFavorite(movie.id) ? 'currentColor' : 'none'}
+            className={isFavorite(movie.id) ? 'text-red-500' : 'text-white'}
+          />
+        </button>
+      )}
+    </div>
   );
 };
 
