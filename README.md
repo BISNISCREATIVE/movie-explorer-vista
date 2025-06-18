@@ -1,8 +1,9 @@
-# Welcome to your Lovable project
+# Welcome to your Lovable project - AHADEMY ASSIGNMENT-9
 
-## Project info
+## Project info - ESTABLISH FIGMA DESIGN TO REACT VITE CODE WITH TAILWINDCSS, API TMDB
 
-**URL**: https://lovable.dev/projects/e1c13162-6c0d-4f85-b2ee-76ff9e808a73
+**URL**: https://lovable.dev/projects/e82f3c88-7162-4a84-982d-dfbe1eab897d
+**URL**: https://cine-explorer-reels.lovable.app/
 
 ## How can I edit this code?
 
@@ -10,7 +11,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e1c13162-6c0d-4f85-b2ee-76ff9e808a73) and start prompting.
+Simply visit the [Lovable Project](https://lovable.dev/projects/e82f3c88-7162-4a84-982d-dfbe1eab897d) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
@@ -62,7 +63,7 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/e1c13162-6c0d-4f85-b2ee-76ff9e808a73) and click on Share -> Publish.
+Simply open [Lovable](https://lovable.dev/projects/e82f3c88-7162-4a84-982d-dfbe1eab897d) and click on Share -> Publish.
 
 ## Can I connect a custom domain to my Lovable project?
 
