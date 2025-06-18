@@ -18,7 +18,7 @@ const PlayCircleIcon: React.FC<PlayCircleIconProps> = ({ size = 32 }) => (
     aria-hidden="true"
     focusable="false"
   >
-    <circle cx="28" cy="24" r="24" fill="#fff" />
+    <circle cx="24" cy="24" r="24" fill="#fff" />
     <polygon
       points="19,15.5 19,32.5 33.5,24"
       fill="#191919"
