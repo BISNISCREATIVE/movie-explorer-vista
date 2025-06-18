@@ -22,7 +22,7 @@ const WatchTrailerButton: FunctionComponent<WatchTrailerButtonProps> = ({
         <div className="relative leading-[30px] font-semibold">
           {isTrailerVisible ? 'Close Trailer' : 'Watch Trailer'}
         </div>
-        <PlayCircleIcon size={30} />
+        <PlayCircleIcon size={28} />
       </button>
     </div>
   );
