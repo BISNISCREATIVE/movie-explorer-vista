@@ -7,6 +7,7 @@ import MovieHeroSection from '@/components/MovieHeroSection';
 import MovieOverview from '@/components/MovieOverview';
 import MovieCastCrew from '@/components/MovieCastCrew';
 import InlineTrailerPlayer from '@/components/InlineTrailerPlayer';
+import WatchTrailerButton from '@/components/WatchTrailerButton';
 
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -110,6 +111,18 @@ const MovieDetail = () => {
         <div className="space-y-8 md:space-y-12">
           {/* Overview */}
           <MovieOverview movie={movie} />
+
+          {/* Watch Trailer Button */}
+          {trailers.length > 0 && (
+            <div className="flex justify-center">
+              <div className="w-full max-w-xs">
+                <WatchTrailerButton
+                  onClick={handleWatchTrailer}
+                  isTrailerVisible={showTrailer}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Inline Trailer */}
           {showTrailer && selectedTrailer && (
