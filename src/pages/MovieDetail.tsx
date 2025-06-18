@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MovieDetails, Credits, Video } from '@/types/movie';
@@ -112,16 +111,12 @@ const MovieDetail = () => {
           {/* Overview */}
           <MovieOverview movie={movie} />
 
-          {/* Watch Trailer Button */}
+          {/* Watch Trailer Button - Centered below Overview */}
           {trailers.length > 0 && (
-            <div className="flex justify-center">
-              <div className="w-full max-w-xs">
-                <WatchTrailerButton
-                  onClick={handleWatchTrailer}
-                  isTrailerVisible={showTrailer}
-                />
-              </div>
-            </div>
+            <WatchTrailerButton
+              onClick={handleWatchTrailer}
+              isTrailerVisible={showTrailer}
+            />
           )}
 
           {/* Inline Trailer */}
