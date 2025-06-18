@@ -221,7 +221,7 @@ const Home = () => {
                   ))}
                 </CarouselContent>
                 {/* Panah Carousel */}
-                <div className="hidden md:block">
+                <div className="sm=block absolute top-1/2 left-0 right-0 flex justify-between transform -translate-y-1/2 z-10">
                   <CarouselPrevious className="-left-9" />
                   <CarouselNext className="-right-9" />
                 </div>
