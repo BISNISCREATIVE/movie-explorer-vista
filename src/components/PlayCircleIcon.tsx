@@ -9,7 +9,7 @@ interface PlayCircleIconProps {
  * Ikon lingkaran putih dengan segitiga (play) hitam di tengah,
  * didesain mirip dengan referensi yang diberikan user.
  */
-const PlayCircleIcon: React.FC<PlayCircleIconProps> = ({ size = 32 }) => (
+const PlayCircleIcon: React.FC<PlayCircleIconProps> = ({ size = 36 }) => (
   <svg
     width={size}
     height={size}
